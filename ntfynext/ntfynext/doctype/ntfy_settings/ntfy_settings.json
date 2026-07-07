@@ -1,0 +1,210 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-07-07 17:30:00.000000",
+ "description": "Global configuration for NTFYnext. Only System Managers can edit these settings.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "server_url",
+  "column_break_general",
+  "mirror_all_emails",
+  "defaults_section",
+  "default_priority",
+  "default_tags",
+  "column_break_defaults",
+  "default_icon_url",
+  "default_click_url",
+  "auth_section",
+  "auth_type",
+  "username",
+  "password",
+  "token",
+  "advanced_section",
+  "request_timeout",
+  "verify_ssl",
+  "column_break_advanced",
+  "retry_count",
+  "test_section",
+  "test_topic",
+  "test_connection"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "description": "Master switch. When off, NTFYnext queues nothing and sends nothing.",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled"
+  },
+  {
+   "default": "https://ntfy.sh",
+   "description": "Base URL of the ntfy server. Works with any instance, e.g. https://ntfy.sh or https://notify.company.com",
+   "fieldname": "server_url",
+   "fieldtype": "Data",
+   "label": "NTFY Server URL",
+   "mandatory_depends_on": "eval:doc.enabled"
+  },
+  {
+   "fieldname": "column_break_general",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "description": "When enabled, EVERY outgoing notification email is also mirrored to ntfy for opted-in users (not just Notifications with 'Send via NTFY'). Off by default to avoid noise (OTPs, password resets, etc.).",
+   "fieldname": "mirror_all_emails",
+   "fieldtype": "Check",
+   "label": "Mirror All Notification Emails"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "defaults_section",
+   "fieldtype": "Section Break",
+   "label": "Message Defaults"
+  },
+  {
+   "default": "default",
+   "description": "Default ntfy priority (min=1 … max=5) when a notification does not specify one.",
+   "fieldname": "default_priority",
+   "fieldtype": "Select",
+   "label": "Default Priority",
+   "options": "min\nlow\ndefault\nhigh\nmax"
+  },
+  {
+   "description": "Comma-separated ntfy tags/emoji shortcodes, e.g. warning,skull",
+   "fieldname": "default_tags",
+   "fieldtype": "Data",
+   "label": "Default Tags"
+  },
+  {
+   "fieldname": "column_break_defaults",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Default notification icon URL (shown by ntfy clients).",
+   "fieldname": "default_icon_url",
+   "fieldtype": "Data",
+   "label": "Default Icon URL"
+  },
+  {
+   "description": "Default click-through URL applied when a notification does not set one.",
+   "fieldname": "default_click_url",
+   "fieldtype": "Data",
+   "label": "Default Click URL"
+  },
+  {
+   "fieldname": "auth_section",
+   "fieldtype": "Section Break",
+   "label": "Authentication"
+  },
+  {
+   "default": "None",
+   "description": "How to authenticate with the ntfy server.",
+   "fieldname": "auth_type",
+   "fieldtype": "Select",
+   "label": "Authentication Type",
+   "options": "None\nBasic\nBearer"
+  },
+  {
+   "depends_on": "eval:doc.auth_type=='Basic'",
+   "fieldname": "username",
+   "fieldtype": "Data",
+   "label": "Username",
+   "mandatory_depends_on": "eval:doc.auth_type=='Basic'"
+  },
+  {
+   "depends_on": "eval:doc.auth_type=='Basic'",
+   "fieldname": "password",
+   "fieldtype": "Password",
+   "label": "Password",
+   "mandatory_depends_on": "eval:doc.auth_type=='Basic'"
+  },
+  {
+   "depends_on": "eval:doc.auth_type=='Bearer'",
+   "description": "ntfy access token (stored encrypted).",
+   "fieldname": "token",
+   "fieldtype": "Password",
+   "label": "Bearer Token",
+   "length": 300,
+   "mandatory_depends_on": "eval:doc.auth_type=='Bearer'"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "advanced_section",
+   "fieldtype": "Section Break",
+   "label": "Advanced"
+  },
+  {
+   "default": "10",
+   "description": "HTTP request timeout in seconds.",
+   "fieldname": "request_timeout",
+   "fieldtype": "Int",
+   "label": "Request Timeout (s)",
+   "non_negative": 1
+  },
+  {
+   "default": "1",
+   "description": "Verify the server's TLS certificate. Disable only for trusted internal servers with self-signed certs.",
+   "fieldname": "verify_ssl",
+   "fieldtype": "Check",
+   "label": "Verify SSL"
+  },
+  {
+   "fieldname": "column_break_advanced",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "5",
+   "description": "Maximum automatic retry attempts for a failed push before it is marked Failed.",
+   "fieldname": "retry_count",
+   "fieldtype": "Int",
+   "label": "Max Retry Count",
+   "non_negative": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "test_section",
+   "fieldtype": "Section Break",
+   "label": "Test"
+  },
+  {
+   "description": "Topic to publish the test message to. Subscribe to it in your ntfy app to see the test arrive.",
+   "fieldname": "test_topic",
+   "fieldtype": "Data",
+   "label": "Test Topic"
+  },
+  {
+   "depends_on": "eval:!doc.__islocal",
+   "description": "Publishes a test message using the settings above and shows the server response.",
+   "fieldname": "test_connection",
+   "fieldtype": "Button",
+   "label": "Test Connection"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-07-07 17:30:00.000000",
+ "modified_by": "Administrator",
+ "module": "NTFYnext",
+ "name": "NTFY Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
