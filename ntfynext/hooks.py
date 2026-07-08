@@ -35,6 +35,7 @@ app_include_js = "/assets/ntfynext/js/ntfynext.js"
 doctype_js = {
 	"NTFY Settings": "public/js/ntfy_settings.js",
 	"Notification": "public/js/notification.js",
+	"User": "public/js/user.js",
 }
 
 # ---------------------------------------------------------------------------
@@ -63,6 +64,8 @@ fixtures = [
 					"User-ntfy_priority",
 					"User-ntfy_tags",
 					"User-ntfy_silent_mode",
+					"User-ntfy_subscribe_section",
+					"User-ntfy_subscribe_html",
 					"Notification-send_via_ntfy",
 					"Notification-ntfy_section",
 					"Notification-ntfy_topic",

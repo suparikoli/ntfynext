@@ -189,6 +189,50 @@ def has_app_permission() -> bool:
 	return bool(set(frappe.get_roles()) & {"System Manager", "NTFY Manager"})
 
 
+@frappe.whitelist()
+def get_subscribe_info(user: str | None = None) -> dict:
+	"""Return the ntfy subscribe URL + an inline QR SVG for a user's topic.
+
+	Powers the one-tap "Subscribe" card on the User → NTFY tab. Users may fetch
+	their own; System Managers may fetch anyone's. Returns an empty dict when the
+	user has no topic yet.
+	"""
+	user = user or frappe.session.user
+	if user != frappe.session.user:
+		frappe.only_for("System Manager")
+
+	topic = (frappe.db.get_value("User", user, "ntfy_topic") or "").strip()
+	if not topic:
+		return {}
+
+	server = (
+		frappe.db.get_value("User", user, "ntfy_override_server_url")
+		or frappe.get_cached_value("NTFY Settings", "NTFY Settings", "server_url")
+		or "https://ntfy.sh"
+	).rstrip("/")
+	url = f"{server}/{topic}"
+	return {"url": url, "topic": topic, "server": server, "qr_svg": _qr_svg(url)}
+
+
+def _qr_svg(data: str) -> str:
+	"""Render ``data`` as an inline SVG QR code (no external requests, CSP-safe)."""
+	import io
+
+	import pyqrcode
+
+	buf = io.BytesIO()
+	pyqrcode.create(data).svg(
+		buf,
+		scale=4,
+		xmldecl=False,
+		svgns=True,
+		background="#ffffff",
+		module_color="#111111",
+		quiet_zone=2,
+	)
+	return buf.getvalue().decode("utf-8")
+
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------

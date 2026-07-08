@@ -87,6 +87,19 @@ CUSTOM_FIELDS: dict[str, list[dict]] = {
 			"description": "Temporarily pause ntfy delivery without losing your settings.",
 			"insert_after": "ntfy_tags",
 		},
+		{
+			"fieldname": "ntfy_subscribe_section",
+			"fieldtype": "Section Break",
+			"label": "Subscribe on Your Device",
+			"depends_on": "eval:doc.enable_ntfy && doc.ntfy_topic",
+			"insert_after": "ntfy_silent_mode",
+		},
+		{
+			"fieldname": "ntfy_subscribe_html",
+			"fieldtype": "HTML",
+			"depends_on": "eval:doc.enable_ntfy && doc.ntfy_topic",
+			"insert_after": "ntfy_subscribe_section",
+		},
 	],
 	"Notification": [
 		{

@@ -8,6 +8,7 @@ requires-python = ">=3.14"
 readme = "README.md"
 dynamic = ["version"]
 dependencies = [
+    "pyqrcode>=1.2.1",  # inline SVG QR codes for the per-user Subscribe card
     # "frappe~=16.0.0" # Installed and managed by bench.
 ]
 
