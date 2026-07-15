@@ -28,7 +28,13 @@
   "retry_count",
   "test_section",
   "test_topic",
-  "test_connection"
+  "test_connection",
+  "backntfy_section",
+  "backntfy_enabled",
+  "backntfy_url",
+  "column_break_backntfy",
+  "backntfy_api_token",
+  "backntfy_test_connection"
  ],
  "fields": [
   {
@@ -181,6 +187,48 @@
    "fieldname": "test_connection",
    "fieldtype": "Button",
    "label": "Test Connection"
+  },
+  {
+   "collapsible": 1,
+   "description": "Optional backntfy admin-panel integration. When enabled, opting a User into NTFY auto-provisions an ntfy account and topic ACL on the backntfy-managed ntfy server.",
+   "fieldname": "backntfy_section",
+   "fieldtype": "Section Break",
+   "label": "backntfy Auto-Provision"
+  },
+  {
+   "default": "0",
+   "description": "Master switch for backntfy provisioning. When off, User.on_update takes no action.",
+   "fieldname": "backntfy_enabled",
+   "fieldtype": "Check",
+   "label": "Enable backntfy Auto-Provisioning"
+  },
+  {
+   "depends_on": "eval:doc.backntfy_enabled",
+   "description": "Base URL of the backntfy admin panel, e.g. https://backntfy.example.com. Not the ntfy server URL — that stays in Server URL above.",
+   "fieldname": "backntfy_url",
+   "fieldtype": "Data",
+   "label": "backntfy URL",
+   "mandatory_depends_on": "eval:doc.backntfy_enabled"
+  },
+  {
+   "fieldname": "column_break_backntfy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.backntfy_enabled",
+   "description": "Bearer token accepted by backntfy's API (the API_TOKEN env var on the backntfy container). Stored encrypted.",
+   "fieldname": "backntfy_api_token",
+   "fieldtype": "Password",
+   "label": "backntfy API Token",
+   "length": 300,
+   "mandatory_depends_on": "eval:doc.backntfy_enabled"
+  },
+  {
+   "depends_on": "eval:!doc.__islocal && doc.backntfy_enabled",
+   "description": "Checks that backntfy is reachable and that the API token is accepted.",
+   "fieldname": "backntfy_test_connection",
+   "fieldtype": "Button",
+   "label": "Test backntfy Connection"
   }
  ],
  "index_web_pages_for_search": 1,

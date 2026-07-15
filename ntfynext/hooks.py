@@ -66,6 +66,8 @@ fixtures = [
 					"User-ntfy_silent_mode",
 					"User-ntfy_subscribe_section",
 					"User-ntfy_subscribe_html",
+					"User-ntfy_provisioned",
+					"User-ntfy_client_password",
 					"Notification-send_via_ntfy",
 					"Notification-ntfy_section",
 					"Notification-ntfy_topic",
@@ -82,7 +84,11 @@ fixtures = [
 # Document events
 # ---------------------------------------------------------------------------
 doc_events = {
-	"User": {"validate": "ntfynext.user.ensure_topic"},
+	"User": {
+		"validate": "ntfynext.user.ensure_topic",
+		# No-op unless NTFY Settings > backntfy Auto-Provisioning is on.
+		"on_update": "ntfynext.user.sync_backntfy",
+	},
 	# Global mirror: no-op unless NTFY Settings > Mirror All Notification Emails is on.
 	"Email Queue": {"after_insert": "ntfynext.dispatch.on_email_queued"},
 }

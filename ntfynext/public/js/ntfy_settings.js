@@ -55,4 +55,37 @@ frappe.ui.form.on("NTFY Settings", {
 			__("Send")
 		);
 	},
+
+	// Field button "Test backntfy Connection".
+	backntfy_test_connection(frm) {
+		if (frm.is_dirty()) {
+			frappe.msgprint(__("Please save your changes before testing."));
+			return;
+		}
+		frappe.call({
+			method: "test_backntfy_connection",
+			doc: frm.doc,
+			freeze: true,
+			freeze_message: __("Checking backntfy..."),
+			callback: (r) => {
+				const res = r.message || {};
+				if (res.ok) {
+					frappe.msgprint({
+						title: __("Success"),
+						indicator: "green",
+						message: __("Reached <b>{0}</b> — API token accepted (HTTP {1}).", [
+							frappe.utils.escape_html(res.url || ""),
+							res.status_code,
+						]),
+					});
+				} else {
+					frappe.msgprint({
+						title: __("backntfy Connection Failed"),
+						indicator: "red",
+						message: `<code>${frappe.utils.escape_html(res.error || "Unknown error")}</code>`,
+					});
+				}
+			},
+		});
+	},
 });

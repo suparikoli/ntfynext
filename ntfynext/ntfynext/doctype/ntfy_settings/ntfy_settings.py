@@ -25,6 +25,9 @@ class NTFYSettings(Document):
 	# This code is auto-generated. Do not modify anything in this block.
 	if TYPE_CHECKING:
 		auth_type: DF.Literal["None", "Basic", "Bearer"]
+		backntfy_api_token: DF.Password | None
+		backntfy_enabled: DF.Check
+		backntfy_url: DF.Data | None
 		default_click_url: DF.Data | None
 		default_icon_url: DF.Data | None
 		default_priority: DF.Literal["min", "low", "default", "high", "max"]
@@ -50,6 +53,10 @@ class NTFYSettings(Document):
 			self.server_url = self.server_url.strip().rstrip("/")
 			# Raises frappe.ValidationError on an unsafe/malformed URL.
 			validate_server_url(self.server_url)
+
+		if self.backntfy_url:
+			self.backntfy_url = self.backntfy_url.strip().rstrip("/")
+			validate_server_url(self.backntfy_url)
 
 		if self.request_timeout is not None and self.request_timeout <= 0:
 			self.request_timeout = 10
@@ -92,6 +99,40 @@ class NTFYSettings(Document):
 			"topic": topic,
 			"server": config.server_url,
 			"response": result.body,
+			"error": result.error,
+		}
+
+
+	@frappe.whitelist()
+	def test_backntfy_connection(self) -> dict:
+		"""Verify backntfy is reachable and the API token is accepted.
+
+		Uses ``GET /api/users`` — the cheapest authenticated endpoint. A 200
+		means URL + token are both good; a 401 means the token is wrong; a
+		network error is surfaced as ``ok: False`` with the message.
+		"""
+		frappe.only_for("System Manager")
+
+		from ntfynext.backntfy import BackntfyConfig, test_connection
+
+		if not self.backntfy_url:
+			return {"ok": False, "error": _("backntfy URL is not set")}
+
+		api_token = self.get_password("backntfy_api_token", raise_exception=False) or ""
+		if not api_token:
+			return {"ok": False, "error": _("backntfy API token is not set")}
+
+		config = BackntfyConfig(
+			url=self.backntfy_url,
+			api_token=api_token,
+			timeout=self.request_timeout or 10,
+			verify_ssl=bool(self.verify_ssl),
+		)
+		result = test_connection(config)
+		return {
+			"ok": result.ok,
+			"status_code": result.status_code,
+			"url": self.backntfy_url,
 			"error": result.error,
 		}
 

@@ -100,6 +100,25 @@ CUSTOM_FIELDS: dict[str, list[dict]] = {
 			"depends_on": "eval:doc.enable_ntfy && doc.ntfy_topic",
 			"insert_after": "ntfy_subscribe_section",
 		},
+		{
+			"fieldname": "ntfy_provisioned",
+			"fieldtype": "Check",
+			"label": "backntfy Provisioned",
+			"read_only": 1,
+			"description": "Set to 1 by the backntfy auto-provision hook after a successful create + ACL grant. Uncheck to force re-provisioning on next save.",
+			"depends_on": "eval:doc.enable_ntfy",
+			"insert_after": "ntfy_subscribe_html",
+		},
+		{
+			"fieldname": "ntfy_client_password",
+			"fieldtype": "Password",
+			"label": "NTFY Account Password",
+			"read_only": 1,
+			"description": "Auto-generated password for the ntfy account provisioned via backntfy. Use it (with this username) to sign into your ntfy mobile/web app. Only visible to System Manager and the user themselves.",
+			"depends_on": "eval:doc.enable_ntfy && doc.ntfy_provisioned",
+			"length": 300,
+			"insert_after": "ntfy_provisioned",
+		},
 	],
 	"Notification": [
 		{
