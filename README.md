@@ -31,6 +31,10 @@ message as a push on their phone or desktop through **any** ntfy server
   URL/SSRF validation, TLS verification.
 - **Extensible** — a provider interface so Telegram / Gotify / Discord / Matrix / …
   can be added later without touching dispatch, queueing, or logging.
+- **Optional [backntfy](https://github.com/mithtech/backntfy) auto-provisioning** —
+  when your ntfy server is locked down (`NTFY_AUTH_DEFAULT_ACCESS=deny-all`),
+  hand NTFY Settings a backntfy URL + API token and every User opt-in creates
+  the ntfy account + topic ACL for you.
 
 ## Quick start
 

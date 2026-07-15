@@ -48,9 +48,10 @@ Two entry paths feed one transport, and every attempt is logged.
 | `api.py` | Developer API + whitelisted desk endpoints. |
 | `overrides/notification.py` | `NTFYNotification` (precise path). |
 | `tasks.py` | `retry_failed_notifications` cron sweep. |
-| `user.py` | Auto-generate an unguessable topic on opt-in. |
+| `user.py` | Auto-generate an unguessable topic on opt-in; optional `sync_backntfy` hook enqueues a backntfy provisioning job. |
 | `install.py` | Custom fields, role, default settings (idempotent). |
 | `utils.py` | URL/SSRF validation, priority/tag normalisation, header redaction, logging. |
+| `backntfy.py` | Optional client for a [backntfy](https://github.com/mithtech/backntfy) admin-panel instance — `provision_user` / `deprovision_user` / `test_connection`. Same never-raise style as `providers/ntfy.py`. |
 
 ## Key design decisions
 
@@ -77,3 +78,26 @@ Two entry paths feed one transport, and every attempt is logged.
 A new channel (Telegram, Gotify, Discord, Matrix, …) is a new
 `providers/<name>.py` implementing `publish`, selected via settings — no changes
 to dispatch, queueing, retries, or logging.
+
+## Optional backntfy provisioning flow
+
+`backntfy.py` is a separate concern from the transport — it never runs at
+publish time. It's only invoked from `user.sync_backntfy` on `User.on_update`,
+via `frappe.enqueue(..., queue="short", enqueue_after_commit=True)`.
+
+```
+User.on_update ──► sync_backntfy (guard: enable_ntfy + topic + settings.backntfy_enabled)
+                         │
+                         ▼
+                enqueue_after_commit  ────► worker runs _provision_via_backntfy
+                                                      │
+                                                      ▼
+                                             backntfy.provision_user
+                                              (POST /api/users, POST /api/access)
+                                                      │
+                                                      ▼
+                                    frappe.db.set_value: ntfy_provisioned + ntfy_client_password
+```
+
+Failures are logged and the User save is unaffected — the transport path (the
+diagram at the top) has no dependency on backntfy.

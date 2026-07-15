@@ -38,8 +38,18 @@ bench restart                       # so workers/scheduler pick up the new hooks
 ## Upgrade
 
 `bench --site your.site migrate` runs `after_migrate` and the
-`ntfynext.patches.v1_0.ensure_setup` patch — both idempotent — to (re)ensure the
-custom fields, role, and defaults.
+`ntfynext.patches.v1_0.ensure_setup` + `ntfynext.patches.v1_0.add_backntfy_fields`
+patches — both idempotent — to (re)ensure the custom fields, role, and defaults.
+
+## Optional: backntfy integration
+
+If your ntfy server is locked down (`NTFY_AUTH_DEFAULT_ACCESS=deny-all`), you can
+avoid hand-creating an ntfy account for every user by connecting NTFYnext to a
+[backntfy](https://github.com/mithtech/backntfy) admin panel instance.
+
+Nothing extra to install — the client is bundled. Configure it via **NTFY Settings ▸
+backntfy Auto-Provision** (see [configuration §
+backntfy auto-provisioning](configuration.md#backntfy-auto-provisioning-optional)).
 
 ## Uninstall
 
