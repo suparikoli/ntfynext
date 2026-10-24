@@ -7,7 +7,7 @@ Notification (Send via NTFY ✓) ─┐
                                  ├─► resolve recipients → users → topics ─┐
 Email Queue.after_insert (mirror)┘        (per-user opt-in + topic)        │
                                                                            ▼
-ntfynext.notify(...) ──────────────────────────────────────► enqueue_publish
+mith_ntfy.notify(...) ──────────────────────────────────────► enqueue_publish
                                                                            │  (Queued log)
                                                                            ▼
                                                           frappe.enqueue (worker)
@@ -34,7 +34,7 @@ Two entry paths feed one transport, and every attempt is logged.
    checks on the request path and defers parsing/delivery to a background job. It is
    skipped for emails already handled by the precise path (via `frappe.flags.ntfynext_inline`).
 
-3. **Developer API.** `ntfynext.notify()` / `send_notification()` / `publish()`.
+3. **Developer API.** `mith_ntfy.notify()` / `send_notification()` / `publish()`.
 
 ## Modules
 

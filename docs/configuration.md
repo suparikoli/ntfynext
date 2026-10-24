@@ -63,7 +63,7 @@ Skip this section if your ntfy server accepts anonymous reads/writes
 account for every user via the `ntfy` CLI.
 
 For a locked-down (`deny-all`) self-hosted ntfy, [backntfy](https://github.com/mithtech/backntfy)
-provides a web panel + REST API for user/ACL/token management. When ntfynext is
+provides a web panel + REST API for user/ACL/token management. When mith_ntfy is
 told about it, opting a user into NTFY also:
 
 1. Creates an ntfy account with the user's Frappe username and a random password.
@@ -78,7 +78,7 @@ told about it, opting a user into NTFY also:
    env var (at least 32 chars).
 2. In backntfy, create a `frappe-publisher` user with role `admin` and issue a
    never-expiring token for it. This token goes into NTFY Settings ▸
-   **Authentication Type: Bearer** and lets ntfynext publish to any topic.
+   **Authentication Type: Bearer** and lets mith_ntfy publish to any topic.
 3. In NTFY Settings ▸ **backntfy Auto-Provision** section:
    - Tick **Enable backntfy Auto-Provisioning**
    - **backntfy URL**: `https://backntfy.example.com`
@@ -87,12 +87,12 @@ told about it, opting a user into NTFY also:
 
 ### Runtime behaviour
 
-- The hook is `ntfynext.user.sync_backntfy` on `User.on_update`. It enqueues a
+- The hook is `mith_ntfy.user.sync_backntfy` on `User.on_update`. It enqueues a
   short-queue job (`enqueue_after_commit=True`), so a slow or unreachable
   backntfy never blocks a User save.
 - Idempotent: users with `ntfy_provisioned=1` are skipped unless their topic
   changed. A "user already exists" (4xx) from backntfy is treated as success and
   the flow proceeds to the ACL grant.
-- Failures are logged to the site log (`ntfynext` logger) — the User still saves.
+- Failures are logged to the site log (`mith_ntfy` logger) — the User still saves.
 - Uncheck **backntfy Provisioned** on a User to force re-provisioning on the
   next save.
