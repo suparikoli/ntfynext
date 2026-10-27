@@ -89,6 +89,10 @@ cd apps/mith_ntfy
 pre-commit install
 ```
 
+## Made by MithTech
+
+NTFYnext is built and maintained by [MithTech](https://mith.tech), Frappe specialists in Bengaluru, who implement and support ERPNext. Questions or help: [mith.tech/contact](https://mith.tech/contact).
+
 ## License
 
 MIT
