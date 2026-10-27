@@ -7,7 +7,7 @@ repos:
     rev: v4.6.0
     hooks:
       - id: trailing-whitespace
-        files: "ntfynext.*"
+        files: "mith_ntfy.*"
         exclude: ".*json$|.*txt$|.*csv|.*md|.*svg"
       - id: check-yaml
       - id: check-merge-conflict
@@ -17,7 +17,7 @@ repos:
       - id: check-added-large-files
         args: ['--maxkb=1000']
       - id: end-of-file-fixer
-        files: "ntfynext.*"
+        files: "mith_ntfy.*"
         exclude: ".*json$|.*txt$|.*csv|.*md|.*svg"
 
   - repo: https://github.com/astral-sh/ruff-pre-commit

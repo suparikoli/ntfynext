@@ -1,4 +1,7 @@
-# NTFYnext
+# Mith ntfy
+
+> Renamed from `ntfynext` to `mith_ntfy` on 2026-10-24 (owner-approved `mith_` names). A site that still runs
+> `ntfynext`: `bench --site <site> rename-from-ntfynext`, then `bench --site <site> migrate`.
 
 Deliver Frappe notifications as [ntfy](https://ntfy.sh) push notifications — as an
 **additional** channel alongside email, never a replacement.
@@ -31,13 +34,17 @@ message as a push on their phone or desktop through **any** ntfy server
   URL/SSRF validation, TLS verification.
 - **Extensible** — a provider interface so Telegram / Gotify / Discord / Matrix / …
   can be added later without touching dispatch, queueing, or logging.
+- **Optional [backntfy](https://github.com/mithtech/backntfy) auto-provisioning** —
+  when your ntfy server is locked down (`NTFY_AUTH_DEFAULT_ACCESS=deny-all`),
+  hand NTFY Settings a backntfy URL + API token and every User opt-in creates
+  the ntfy account + topic ACL for you.
 
 ## Quick start
 
 ```bash
 cd $PATH_TO_YOUR_BENCH
 bench get-app $URL_OF_THIS_REPO --branch version-16
-bench --site your.site install-app ntfynext
+bench --site your.site install-app mith_ntfy
 ```
 
 Then, as a System Manager:
@@ -51,7 +58,7 @@ Then, as a System Manager:
 ## Developer API
 
 ```python
-from ntfynext import notify
+from mith_ntfy import notify
 
 notify(users=["Administrator"], title="Lead Assigned",
        message="A new lead has been assigned.", url="/app/lead/LEAD-0001")
@@ -70,7 +77,7 @@ notify(topic="sales-team", title="New Opportunity", message="…")
 
 ```bash
 bench --site your.site set-config allow_tests true
-bench --site your.site run-tests --app ntfynext
+bench --site your.site run-tests --app mith_ntfy
 ```
 
 ## Contributing
@@ -78,7 +85,7 @@ bench --site your.site run-tests --app ntfynext
 This app uses `pre-commit` (ruff, eslint, prettier, pyupgrade):
 
 ```bash
-cd apps/ntfynext
+cd apps/mith_ntfy
 pre-commit install
 ```
 

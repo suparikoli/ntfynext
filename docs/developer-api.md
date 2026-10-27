@@ -3,7 +3,7 @@
 ## `notify(...)`
 
 ```python
-from ntfynext import notify
+from mith_ntfy import notify
 
 # Notify users (only opted-in, non-silent users with a topic get a push):
 notify(
@@ -41,7 +41,7 @@ background worker; the master **Enabled** switch gates everything.
 ## Convenience wrappers
 
 ```python
-from ntfynext import send_notification, publish
+from mith_ntfy import send_notification, publish
 
 send_notification("Administrator", title="Hi", message="…", url="/app")
 publish("ops-alerts", title="Disk 90%", message="…", priority="high", tags="warning")
@@ -51,12 +51,41 @@ publish("ops-alerts", title="Disk 90%", message="…", priority="high", tags="wa
 
 | Method | Used by |
 |---|---|
-| `ntfynext.api.send_test` | The **NTFY Test** page (synchronous; returns the server response). |
-| `ntfynext.api.send_manual` | The **Send NTFY Notification** document menu. |
+| `mith_ntfy.api.send_test` | The **NTFY Test** page (synchronous; returns the server response). |
+| `mith_ntfy.api.send_manual` | The **Send NTFY Notification** document menu. |
 | `NTFY Settings.test_connection` | The **Test Connection** button. |
+| `NTFY Settings.test_backntfy_connection` | The **Test backntfy Connection** button. Requires **System Manager**. |
 
 Both `send_test` and `send_manual` require the **System Manager** or **NTFY Manager**
 role; `send_manual` also checks read access to the referenced document.
+
+## backntfy client
+
+`mith_ntfy.backntfy` is a small never-raise client for a
+[backntfy](https://github.com/mithtech/backntfy) admin-panel instance. It's
+called by `user.sync_backntfy` on User opt-in and by the settings' Test
+Connection button, but is also a normal Python module you can call directly
+from other code (e.g. a bulk-provisioning script):
+
+```python
+from mith_ntfy.backntfy import BackntfyConfig, provision_user
+
+config = BackntfyConfig(
+    url="https://backntfy.example.com",
+    api_token="…",             # NTFY Settings ▸ backntfy API Token
+    timeout=10,
+    verify_ssl=True,
+)
+result = provision_user(config, "alice@example.com", "ntfy-alice-a3f9")
+if result.ok and result.generated_password:
+    # first-time provisioning — hand this to the user
+    print(result.generated_password)
+```
+
+Every function returns a `BackntfyResult(ok, status_code, body, error,
+duration, generated_password)` and never raises. See
+[configuration § backntfy auto-provisioning](configuration.md#backntfy-auto-provisioning-optional)
+for setup.
 
 ## Jinja templates
 
@@ -66,6 +95,6 @@ capped at 1000 characters for the push.
 
 ## Adding another provider
 
-Implement `ntfynext.providers.base.NotificationProvider` and map a
+Implement `mith_ntfy.providers.base.NotificationProvider` and map a
 `PushMessage`; register it in the dispatch layer. Nothing in the dispatch,
 queue, or log code needs to change. See [architecture](architecture.md).

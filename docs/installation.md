@@ -11,7 +11,7 @@
 ```bash
 cd $PATH_TO_YOUR_BENCH
 bench get-app $URL_OF_THIS_REPO --branch version-16
-bench --site your.site install-app ntfynext
+bench --site your.site install-app mith_ntfy
 bench --site your.site migrate      # if upgrading an existing install
 bench restart                       # so workers/scheduler pick up the new hooks
 ```
@@ -31,20 +31,30 @@ bench restart                       # so workers/scheduler pick up the new hooks
 ## Verify
 
 1. **NTFY Settings → Test Connection** should return HTTP `200`.
-2. `bench --site your.site execute ntfynext.api.notify --kwargs '{"topic":"my-topic","title":"Hi","message":"test"}'`
+2. `bench --site your.site execute mith_ntfy.api.notify --kwargs '{"topic":"my-topic","title":"Hi","message":"test"}'`
    then watch `https://ntfy.sh/my-topic`.
 3. Check **NTFY Notification Log** for a `Success` row.
 
 ## Upgrade
 
 `bench --site your.site migrate` runs `after_migrate` and the
-`ntfynext.patches.v1_0.ensure_setup` patch — both idempotent — to (re)ensure the
-custom fields, role, and defaults.
+`mith_ntfy.patches.v1_0.ensure_setup` + `mith_ntfy.patches.v1_0.add_backntfy_fields`
+patches — both idempotent — to (re)ensure the custom fields, role, and defaults.
+
+## Optional: backntfy integration
+
+If your ntfy server is locked down (`NTFY_AUTH_DEFAULT_ACCESS=deny-all`), you can
+avoid hand-creating an ntfy account for every user by connecting Mith ntfy to a
+[backntfy](https://github.com/mithtech/backntfy) admin panel instance.
+
+Nothing extra to install — the client is bundled. Configure it via **NTFY Settings ▸
+backntfy Auto-Provision** (see [configuration §
+backntfy auto-provisioning](configuration.md#backntfy-auto-provisioning-optional)).
 
 ## Uninstall
 
 ```bash
-bench --site your.site uninstall-app ntfynext
+bench --site your.site uninstall-app mith_ntfy
 ```
 
 This removes the doctypes, custom fields, role, workspace, and page.
