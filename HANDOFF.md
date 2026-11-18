@@ -1,26 +1,32 @@
-# NTFYnext: handoff (2026-10-18)
+# ntfynext: handoff
 
-Status: **dormant**. Bench-level notes (how to start the bench, MariaDB dumps, versions): `../../HANDOFF.md`.
+Updated 2026-11-19.
 
-## Purpose
+## What it is
 
-Delivers Frappe notifications as ntfy push notifications, as an extra channel next to email. A **Send via NTFY** checkbox on the Notification doctype, a per-user opt-in with a private topic (Subscribe card with QR code), a `ntfynext.notify()` Python API, and auto-provisioning through `backntfy` (the ntfy backend in `Coding/000-docker/NTFY/backntfy`).
+Delivers Frappe notifications as ntfy push notifications, as an extra channel next to email.
+It adds a "Send via NTFY" checkbox on the Notification doctype, a per-user opt-in with a private topic (Subscribe card with QR code), a `ntfynext.notify()` Python API, and auto-provisioning through `backntfy`.
 
-## How to run
+## State
 
-```bash
-bench --site <site> install-app ntfynext      # requires-python >=3.14; dependency pyqrcode; no Node pin
-bench --site <site> set-config allow_tests true
-bench --site <site> run-tests --app ntfynext
-```
-Configure in **NTFY Settings** (server URL, auth type; password fields `token`, `password`, `backntfy_api_token`, stored in the site DB). No `.env` files. Docs in `docs/` (installation, configuration, developer API, architecture). External service: any ntfy server (ntfy.sh or self-hosted). Data home: local (no Offload profile).
+- Status: dormant.
+- Default branch: `main` (`34c6361`, merged from `version-16` in the branch consolidation). Local checkout is on `wip`. Ship with `git ship`.
+- Gate: `bench --site <site> run-tests --app ntfynext` (needs `allow_tests` set). Run tests against a live ntfy server before a release.
+- Deploy target: none recorded. The app ships with the bench that installs it.
+- Python `>=3.14`, dependency `pyqrcode`. No Node pin.
+- Last notable work: `3c9898d` (2026-07-15) documented the backntfy auto-provisioning integration.
+- Bench notes (start, dumps, versions): `../../HANDOFF.md`.
 
-## Last state
+## Open work
 
-- Branch `version-16` at `3c9898d` (2026-07-15, "docs: document backntfy auto-provisioning integration"), in sync with `origin` (git@github.com:suparikoli/ntfynext). Working tree clean. TODO/FIXME/HACK: 0.
-- No git actions on 2026-10-18. No Claude sessions or plans for this app since July (only a passing mention on 2026-10-12).
-- Pulse has its own ntfy notifications; Medusa uses ntfy for operator alerts.
+- None pending.
+- If revived: restore a site, install the app, run the tests against a live ntfy server.
+- Configuration lives in NTFY Settings (server URL, auth type). Password fields (`token`, `password`, `backntfy_api_token`) sit in the site DB. Do not commit them.
+- Pulse and Medusa run their own ntfy alerts. Changes here do not affect them.
 
-## Next steps
+## Read next
 
-None pending. If revived: restore a site, install, and run the tests against a live ntfy server.
+- `docs/`: installation, configuration, developer API, architecture.
+- `README.md`: overview.
+- `mith_ntfy/` and `ntfynext/`: app code.
+- `../../../000-docker/NTFY/backntfy`: the ntfy admin backend (own repo).
