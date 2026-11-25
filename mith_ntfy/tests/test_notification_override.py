@@ -8,8 +8,12 @@ from __future__ import annotations
 from unittest.mock import patch
 
 import frappe
-from frappe.model.base_document import get_controller
 from frappe.tests import IntegrationTestCase
+
+try:  # frappe 16.60 moved get_controller to frappe.model.document
+	from frappe.model.document import get_controller
+except ImportError:  # frappe 16.5x
+	from frappe.model.base_document import get_controller
 
 
 class TestNotificationOverride(IntegrationTestCase):
